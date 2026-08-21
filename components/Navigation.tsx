@@ -46,24 +46,36 @@ export default function Navigation({ activeSection, onNavigate, t, locale }: Nav
 
           {/* Desktop Nav Items */}
           <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavigate(item.id)}
-                className={`relative py-2 text-sm font-medium transition-colors cursor-pointer ${
-                  activeSection === item.id ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {item.label}
-                {activeSection === item.id && (
-                  <motion.div
-                    layoutId="activeNavIndicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+            {menuItems.map((item) =>
+              item.href ? (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`relative py-2 text-sm font-medium transition-colors cursor-pointer ${
+                    activeSection === item.id ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavigate(item.id)}
+                  className={`relative py-2 text-sm font-medium transition-colors cursor-pointer ${
+                    activeSection === item.id ? "text-indigo-600 font-semibold" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {item.label}
+                  {activeSection === item.id && (
+                    <motion.div
+                      layoutId="activeNavIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ),
+            )}
 
             {/* Language Switcher (desktop) */}
             <div className="relative">
@@ -130,19 +142,34 @@ export default function Navigation({ activeSection, onNavigate, t, locale }: Nav
             className="md:hidden bg-white border-t border-slate-100"
           >
             <div className="px-4 py-3 flex flex-col space-y-1">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavigate(item.id)}
-                  className={`text-left px-3 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                    activeSection === item.id
-                      ? "text-indigo-600 bg-indigo-50 font-semibold"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {menuItems.map((item) =>
+                item.href ? (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`text-left px-3 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      activeSection === item.id
+                        ? "text-indigo-600 bg-indigo-50 font-semibold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavigate(item.id)}
+                    className={`text-left px-3 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      activeSection === item.id
+                        ? "text-indigo-600 bg-indigo-50 font-semibold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ),
+              )}
 
               {/* Language Switcher (mobile) */}
               <div className="pt-2 mt-2 border-t border-slate-100">

@@ -1,6 +1,6 @@
 export interface Translations {
   nav: {
-    menuItems: { id: string; label: string }[];
+    menuItems: { id: string; label: string; href?: string }[];
     openMenuAria: string;
     languageButton: string;
     languageOptions: { code: "ko" | "en"; label: string; sub: string }[];
@@ -120,6 +120,11 @@ export interface Translations {
     closeAria: string;
     confirmButton: string;
   };
+  notices: {
+    pageTitle: string;
+    pageSubtitle: string;
+    empty: string;
+  };
 }
 
 export const translations: Record<"ko" | "en", Translations> = {
@@ -130,6 +135,7 @@ export const translations: Record<"ko" | "en", Translations> = {
         { id: "profile", label: "회사 소개" },
         { id: "projects", label: "대표 실적" },
         { id: "ai-news", label: "AI 뉴스" },
+        { id: "notices", label: "공지사항", href: "/notices" },
         { id: "contact", label: "코칭 신청" },
       ],
       openMenuAria: "메뉴 열기",
@@ -331,6 +337,11 @@ export const translations: Record<"ko" | "en", Translations> = {
       closeAria: "팝업 닫기",
       confirmButton: "확인했어요",
     },
+    notices: {
+      pageTitle: "공지사항",
+      pageSubtitle: "대표강사 강의 일정 및 주요 공지를 확인하세요.",
+      empty: "등록된 공지사항이 없습니다.",
+    },
   },
   en: {
     nav: {
@@ -339,6 +350,7 @@ export const translations: Record<"ko" | "en", Translations> = {
         { id: "profile", label: "Company" },
         { id: "projects", label: "Portfolio" },
         { id: "ai-news", label: "AI News" },
+        { id: "notices", label: "Notices", href: "/en/notices" },
         { id: "contact", label: "Apply" },
       ],
       openMenuAria: "Open menu",
@@ -539,6 +551,11 @@ export const translations: Record<"ko" | "en", Translations> = {
       subtitle: "Check the latest class schedule.",
       closeAria: "Close popup",
       confirmButton: "Got it",
+    },
+    notices: {
+      pageTitle: "Notices",
+      pageSubtitle: "Check the latest class schedule and announcements.",
+      empty: "No notices yet.",
     },
   },
 };
