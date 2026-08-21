@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     console.warn("DATABASE_URL 미설정 — 메모리에만 저장됨");
   }
 
-  sendContactNotification(newContact);
+  await sendContactNotification(newContact);
 
   return NextResponse.json(
     {

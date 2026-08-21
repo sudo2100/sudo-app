@@ -28,10 +28,12 @@ interface ContactMailPayload {
   createdAt: string;
 }
 
-export function sendContactNotification(contact: ContactMailPayload) {
-  if (!emailTransporter) return;
+// 응답을 반환하기 전에 반드시 await 해야 한다 — 서버리스 함수는 응답 직후 실행 컨텍스트가
+// 정지될 수 있어, await 없이 발사(fire-and-forget)하면 발송 도중 잘려나갈 수 있다.
+export function sendContactNotification(contact: ContactMailPayload): Promise<void> {
+  if (!emailTransporter) return Promise.resolve();
 
-  emailTransporter
+  return emailTransporter
     .sendMail({
       from: `"SUDO 소프트 홈페이지" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
@@ -48,5 +50,8 @@ export function sendContactNotification(contact: ContactMailPayload) {
         </table>
       `,
     })
-    .catch((err: Error) => console.error("이메일 발송 오류:", err.message));
+    .then(() => undefined)
+    .catch((err: Error) => {
+      console.error("이메일 발송 오류:", err.message);
+    });
 }
