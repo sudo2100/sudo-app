@@ -6,13 +6,17 @@ import type { Translations } from "@/lib/translations";
 
 interface SchedulePopupProps {
   t: Translations;
+  initialItems?: ScheduleItem[];
 }
 
-export default function SchedulePopup({ t }: SchedulePopupProps) {
-  const [show, setShow] = useState(false);
-  const [items, setItems] = useState<ScheduleItem[]>([]);
+export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
+  const [show, setShow] = useState((initialItems?.length ?? 0) > 0);
+  const [items, setItems] = useState<ScheduleItem[]>(initialItems ?? []);
 
   useEffect(() => {
+    // 서버에서 이미 일정을 받아온 경우 클라이언트 재조회 없이 즉시 노출
+    if (initialItems) return;
+
     (async () => {
       try {
         const res = await fetch("/api/schedules");
@@ -26,7 +30,7 @@ export default function SchedulePopup({ t }: SchedulePopupProps) {
         // 일정 조회 실패 시 팝업을 노출하지 않음
       }
     })();
-  }, []);
+  }, [initialItems]);
 
   if (!show) return null;
 

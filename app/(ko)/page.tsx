@@ -1,8 +1,7 @@
-"use client";
-
 import HomeSections from "@/components/HomeSections";
-import { translations } from "@/lib/translations";
+import { listSchedules } from "@/lib/db";
 
-export default function KoHomePage() {
-  return <HomeSections t={translations.ko} locale="ko" />;
+export default async function KoHomePage() {
+  const initialSchedules = await listSchedules().catch(() => []);
+  return <HomeSections locale="ko" initialSchedules={initialSchedules} />;
 }

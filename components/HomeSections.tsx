@@ -9,15 +9,17 @@ import AiNews from "./AiNews";
 import ContactForm from "./ContactForm";
 import Footer from "./Footer";
 import SchedulePopup from "./SchedulePopup";
-import type { Translations } from "@/lib/translations";
+import { translations } from "@/lib/translations";
 import type { Locale } from "@/lib/locale";
+import type { ScheduleItem } from "@/lib/types";
 
 interface HomeSectionsProps {
-  t: Translations;
   locale: Locale;
+  initialSchedules?: ScheduleItem[];
 }
 
-export default function HomeSections({ t, locale }: HomeSectionsProps) {
+export default function HomeSections({ locale, initialSchedules }: HomeSectionsProps) {
+  const t = translations[locale];
   const [activeSection, setActiveSection] = useState("hero");
 
   // Monitor scroll progression to dynamically update active section trigger
@@ -72,7 +74,7 @@ export default function HomeSections({ t, locale }: HomeSectionsProps) {
       {/* Standard global Footer */}
       <Footer onScrollToTop={handleScrollToTop} t={t} />
 
-      <SchedulePopup t={t} />
+      <SchedulePopup t={t} initialItems={initialSchedules} />
     </div>
   );
 }

@@ -1,8 +1,7 @@
-"use client";
-
 import HomeSections from "@/components/HomeSections";
-import { translations } from "@/lib/translations";
+import { listSchedules } from "@/lib/db";
 
-export default function EnHomePage() {
-  return <HomeSections t={translations.en} locale="en" />;
+export default async function EnHomePage() {
+  const initialSchedules = await listSchedules().catch(() => []);
+  return <HomeSections locale="en" initialSchedules={initialSchedules} />;
 }
