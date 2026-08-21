@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/adminSession";
 import { createSchedule } from "@/lib/db";
+import { revalidateSchedulePages } from "@/lib/revalidate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const schedule = await createSchedule(dateLabel.trim(), description.trim());
+    revalidateSchedulePages();
     return NextResponse.json({ success: true, schedule }, { status: 201 });
   } catch (dbError) {
     const err = dbError as Error;

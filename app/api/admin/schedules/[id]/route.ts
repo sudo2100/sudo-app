@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/adminSession";
 import { updateSchedule, deleteSchedule } from "@/lib/db";
+import { revalidateSchedulePages } from "@/lib/revalidate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
     if (!schedule) {
       return NextResponse.json({ error: "해당 일정을 찾을 수 없습니다." }, { status: 404 });
     }
+    revalidateSchedulePages();
     return NextResponse.json({ success: true, schedule });
   } catch (dbError) {
     const err = dbError as Error;
@@ -46,6 +48,7 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
     if (!deleted) {
       return NextResponse.json({ error: "해당 일정을 찾을 수 없습니다." }, { status: 404 });
     }
+    revalidateSchedulePages();
     return NextResponse.json({ success: true });
   } catch (dbError) {
     const err = dbError as Error;
