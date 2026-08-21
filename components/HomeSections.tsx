@@ -22,6 +22,20 @@ export default function HomeSections({ locale, initialSchedules }: HomeSectionsP
   const t = translations[locale];
   const [activeSection, setActiveSection] = useState("hero");
 
+  // 다른 페이지(예: 공지사항)에서 "/#contact" 같은 해시를 달고 들어온 경우,
+  // 해당 섹션으로 스크롤 이동 — 그렇지 않으면 URL만 바뀌고 화면은 맨 위에 그대로 남는다.
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (!el) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 마운트 시 해시 기반 초기 섹션 지정 1회
+    setActiveSection(hash);
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
+
   // Monitor scroll progression to dynamically update active section trigger
   useEffect(() => {
     const handleScroll = () => {
