@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/ai_coaching_banner_1781579699499.jpg",
-        width: 1376,
-        height: 768,
+        url: "/images/og-card.jpg",
+        width: 1200,
+        height: 630,
       },
     ],
   },
