@@ -9,9 +9,32 @@ interface SchedulePopupProps {
   initialItems?: ScheduleItem[];
 }
 
+// 같은 브라우저 세션에서 페이지 이동(예: 공지사항 ↔ 홈)만으로 팝업이 반복 노출되는 것을 막기 위한 키
+const SEEN_KEY = "sudo:schedulePopupSeen";
+
+function hasSeenPopup(): boolean {
+  try {
+    return sessionStorage.getItem(SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markPopupSeen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    // 세션 스토리지 사용 불가 시 조용히 무시 (매 이동마다 다시 뜨는 것 외엔 영향 없음)
+  }
+}
+
 export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
-  const [show, setShow] = useState((initialItems?.length ?? 0) > 0);
+  const [show, setShow] = useState(() => (initialItems?.length ?? 0) > 0 && !hasSeenPopup());
   const [items, setItems] = useState<ScheduleItem[]>(initialItems ?? []);
+
+  useEffect(() => {
+    if (show) markPopupSeen();
+  }, [show]);
 
   useEffect(() => {
     // 서버에서 이미 일정을 받아온 경우 클라이언트 재조회 없이 즉시 노출
@@ -23,7 +46,7 @@ export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
         const data = await res.json();
         const schedules: ScheduleItem[] = data.schedules || [];
         setItems(schedules);
-        if (schedules.length > 0) {
+        if (schedules.length > 0 && !hasSeenPopup()) {
           setShow(true);
         }
       } catch {
@@ -31,6 +54,11 @@ export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
       }
     })();
   }, [initialItems]);
+
+  const handleClose = () => {
+    markPopupSeen();
+    setShow(false);
+  };
 
   if (!show) return null;
 
@@ -44,7 +72,7 @@ export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
             <p className="text-sm text-slate-500">{t.popup.subtitle}</p>
           </div>
           <button
-            onClick={() => setShow(false)}
+            onClick={handleClose}
             className="rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
             aria-label={t.popup.closeAria}
           >
@@ -60,7 +88,7 @@ export default function SchedulePopup({ t, initialItems }: SchedulePopupProps) {
           ))}
           <div className="flex justify-end">
             <button
-              onClick={() => setShow(false)}
+              onClick={handleClose}
               className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/15 hover:bg-indigo-700 transition"
             >
               {t.popup.confirmButton}
